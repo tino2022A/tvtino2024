@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Reproductor de Lista M3U</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      body {
+        background-image: url('tu-imagen-de-fondo.jpg');
+        background-size: cover;
+        text-align: center;
+      }
+      #container {
+        border: 2px solid blue; /* Marco azul alrededor del contenedor */
+        padding: 10px;
+        display: flex;
+      }
+      #playerContainer {
+        flex: 1; /* El reproductor de video ocupa la mitad del contenedor */
+        padding: 10px;
+      }
+      #playlistContainer {
+        flex: 1; /* El contenedor de la lista de reproducción ocupa la mitad del contenedor */
+        padding: 10px;
+        overflow-y: auto; /* Agrega una barra de desplazamiento vertical */
+        height: 300px; /* Establece una altura fija para el contenedor de la lista de reproducción */
+      }
+      #playlist {
+        /* Agrega un margen para separar los elementos de la barra de desplazamiento */
+        margin-right: 15px;
+      }
+      #socialMedia {
+        float: left;
+        width: 50%;
+        padding: 20px;
+        text-align: right;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Reproductor de Lista M3U</h1>
+    <input type="file" id="fileInput" accept=".m3u" />
+    <button id="loadButton">Cargar Lista de Reproducción</button>
+    <div id="container">
+      <div id="playerContainer">
+        <video id="player" controls></video>
+      </div>
+      <div id="playlistContainer">
+        <div id="playlist"></div>
+      </div>
+    </div>
+    <div id="socialMedia">
+      <!-- Agrega aquí tus enlaces a las redes sociales -->
+    </div>
+    <div id="authorInfo">
+      <!-- Agrega aquí información sobre el autor de la página -->
+    </div>
+    <script src="m3uStreamPlayer.js"></script>
+    <script>
+      var fileInput = document.getElementById('fileInput');
+      var loadButton = document.getElementById('loadButton');
+      var playlist = document.getElementById('playlist');
+      var player = document.getElementById('player');
+
+      loadButton.addEventListener('click', function() {
+        var file = fileInput.files[0];
+        if (file) {
+          var reader = new FileReader();
+          reader.onload = function(e) {
+            var content = e.target.result;
+            var urls = content.trim().split('\n');
+            playlist.innerHTML = ''; // Limpia la lista anterior
+            for (var i = 0; i < urls.length; i++) {
+              var url = urls[i].trim();
+              if (url) {
+                var item = document.createElement('div');
+                item.classList.add('playlist-item');
+                item.textContent = url;
+                item.addEventListener('click', function() {
+                  player.src = this.textContent;
+                  player.play();
+                });
+                playlist.appendChild(item);
+              }
+            }
+          }
+          reader.readAsText(file);
+        }
+      });
+    </script>
+  </body>
+</html>
